@@ -8,8 +8,10 @@ const textAreaElement = document.querySelector('textarea[name=message]');
 // console.log(inputElement);
 // console.log(textAreaElement);
 
-formElement.addEventListener('input', throttle(local, 500));
-formElement.addEventListener('submit', onSubmit);
+formElement.addEventListener('input', throttle(dataInLocalStoradge, 500));
+formElement.addEventListener('submit', onSubmitClick);
+
+// Проверяем хранилище на наличие данных
 
 const savedData = localStorage.getItem('feedback-form-state');
 const parsedData = JSON.parse(savedData);
@@ -19,24 +21,35 @@ if (parsedData) {
   textAreaElement.value = parsedData.message;
 }
 
-function local(event) {
+console.log(localStorage);
+
+// Пишем в хранилище
+
+function dataInLocalStoradge(event) {
   const email = inputElement.value;
   const message = textAreaElement.value;
   localStorage.setItem('feedback-form-state', JSON.stringify({ email, message }));
 }
 
-function onSubmit(event) {
+function onSubmitClick(event) {
   event.preventDefault();
   const email = event.currentTarget.elements.email.value;
   const message = event.currentTarget.elements.message.value;
-  if (!message || !email) {
+
+  // Алерт если пустые поля
+
+  if (!email || !message) {
     return alert('Заполни все поля!');
   }
+
+  // Выводим в консоль
   const objectData = {
     message,
     email,
   };
   console.log(objectData);
+
+  // Очищаем поля и хранилище
   localStorage.removeItem('feedback-form-state');
   formElement.reset();
 }
